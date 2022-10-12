@@ -1,38 +1,46 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
+
 import FormInput from "../form_input/formInput_component";
-import Button from "../button/button_component";
+import Button, { BUTTON_TYPE_CLASSES } from "../button/button_component";
+import { UserContext } from "../../contexts/user_context";
+
 import {
+    signInAuthUserWithEmailAndPassword,
     signInWithGooglePopup,
-    createUserDocumentFromAuth,
-    signInAuthUserWithEmailAndPassword
 } from "../../utils/firebase/firebase_utils";
-import "./signInForm_styles.scss"
+
+import "./signInForm_styles.scss";
 
 const defaultFormFields = {
     email: '',
     password: '',
-}
+};
 
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
 
+    const { setCurrentUser } = useContext(UserContext);
+
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
-    }
+    };
 
     const signInWithGoogle = async () => {
         const { user } = await signInWithGooglePopup();
-        await createUserDocumentFromAuth(user);
+        setCurrentUser(user);
     };
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try {
-            const response = signInAuthUserWithEmailAndPassword(email, password);
-            console.log(response);
+            const { user } = signInAuthUserWithEmailAndPassword(
+                email,
+                password
+            );
             resetFormFields();
+            setCurrentUser(user);
         } catch (error) {
             switch (error.code) {
                 case 'auth/wrong-password':
@@ -50,36 +58,44 @@ const SignInForm = () => {
     const handleChange = (event) => {
         const { name, value } = event.target;
 
-        setFormFields({ ...formFields, [name]: value })
+        setFormFields({ ...formFields, [name]: value });
     };
 
     return (
         <div className='sign-up-container'>
-            <h2>Alerady have an account?</h2>
+            <h2>Already have an account?</h2>
             <span>Sign in with your email and password</span>
             <form onSubmit={handleSubmit}>
                 <FormInput
                     label='Email'
                     type='email'
-                    required onChange={handleChange}
-                    name="email"
+                    required
+                    onChange={handleChange}
+                    name='email'
                     value={email}
                 />
 
                 <FormInput
                     label='Password'
                     type='password'
-                    required onChange={handleChange}
-                    name="password"
+                    required
+                    onChange={handleChange}
+                    name='password'
                     value={password}
                 />
                 <div className='buttons-container'>
                     <Button type='submit'>Sign In</Button>
-                    <Button type='button ' buttonType='google' onClick={signInWithGoogle}>Google sign In</Button>
+                    <Button
+                        buttonType={BUTTON_TYPE_CLASSES.google}
+                        type='button'
+                        onClick={signInWithGoogle}
+                    >
+                        Google sign In
+                    </Button>
                 </div>
             </form>
         </div>
-    )
-}
+    );
+};
 
-export default SignInForm
+export default SignInForm;
