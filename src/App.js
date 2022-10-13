@@ -6,10 +6,7 @@ import {UserContext} from "./contexts/user_context";
 import Home from "./routes/home/home_component";
 import Navigation from "./routes/navigation/navigation_component";
 import Authentication from "./routes/authentication/authentication_component";
-
-const Shop = () => {
-    return <h1>I am the shop page</h1>;
-};
+import Shop from "./routes/shop/shop_component";
 
 const App = () => {
     const { currentUser } = useContext(UserContext);
