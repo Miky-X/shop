@@ -1,12 +1,11 @@
-import {useContext, useState} from "react";
+import { useState } from "react";
 
 import FormInput from "../form_input/formInput_component";
-import Button, { BUTTON_TYPE_CLASSES } from "../button/button_component";
+import Button from "../button/button_component";
 
 import {
     signInAuthUserWithEmailAndPassword,
     signInWithGooglePopup,
-    createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase_utils";
 
 import "./signInForm_styles.scss";
@@ -46,7 +45,7 @@ const SignInForm = () => {
     };
 
     return (
-        <div className='sign-up-container'>
+        <div className='sign-in-container'>
             <h2>Already have an account?</h2>
             <span>Sign in with your email and password</span>
             <form onSubmit={handleSubmit}>
